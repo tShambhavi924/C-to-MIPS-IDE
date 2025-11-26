@@ -1,8 +1,4 @@
-// backend/src/compiler/semantic/semantic_analyzer.js
 
-// We only need these type names for instanceof *if* you want.
-// But to be safe, we mostly use string checks on node.type.
-// If ast_nodes.js exports these, it's fine; if not, no problem.
 let DeclarationNode, AssignmentNode, IdentifierNode, ReturnStatementNode, FunctionDeclarationNode;
 try {
   ({
@@ -13,10 +9,10 @@ try {
     FunctionDeclarationNode
   } = require('../parser/ast_nodes'));
 } catch (e) {
-  // Ignore if not found, we'll rely on node.type strings
+  
 }
 
-/* ========= Symbols & Symbol Table ========= */
+/*  Symbols & Symbol Table */
 
 class VariableSymbol {
   constructor(name, type, isArray = false, arraySize = null) {
@@ -31,18 +27,18 @@ class FunctionSymbol {
   constructor(name, returnType, params = []) {
     this.name = name;
     this.returnType = returnType;
-    this.params = params; // [{type, name}, ...]
+    this.params = params; // [{type, name}]
   }
 }
 
 class SymbolTable {
   constructor() {
-    // we treat everything as "global" storage (no stack locals)
+    //  "global" storage (no stack locals)
     this.variables = new Map();  // name -> VariableSymbol
     this.functions = new Map();  // name -> FunctionSymbol
   }
 
-  /* ---- variables ---- */
+  /* variables */
 
   defineVariable(name, type, isArray = false, arraySize = null) {
     if (!this.variables.has(name)) {
@@ -62,7 +58,7 @@ class SymbolTable {
     return Array.from(this.variables.values());
   }
 
-  /* ---- functions ---- */
+  /* functions */
 
   defineFunction(name, returnType, params = []) {
     if (!this.functions.has(name)) {
@@ -78,7 +74,7 @@ class SymbolTable {
     return this.functions.get(name);
   }
 
-  /* ---- debug / stats ---- */
+  /* debug / stats */
 
   getStats() {
     return {
@@ -104,7 +100,7 @@ class SymbolTable {
   }
 }
 
-/* ========= Semantic Analyzer ========= */
+/* Semantic Analyze */
 
 class SemanticAnalyzer {
   constructor() {
@@ -113,19 +109,19 @@ class SemanticAnalyzer {
   }
 
   analyze(ast) {
-    // 1. Global declarations like: int n;
+   
     (ast.declarations || []).forEach(decl => this._handleDeclaration(decl));
 
-    // 2. Register functions (name + return type + params)
+    
     (ast.functions || []).forEach(fn => {
       const params = fn.params || fn.parameters || [];
       this.symbolTable.defineFunction(fn.name, fn.returnType, params);
     });
 
-    // 3. Analyze each function body
+   
     (ast.functions || []).forEach(fn => this._analyzeFunction(fn));
 
-    // 4. Top-level statements (programs without main)
+   
     (ast.statements || []).forEach(stmt => this._analyzeStatement(stmt));
 
     return {
@@ -134,10 +130,10 @@ class SemanticAnalyzer {
     };
   }
 
-  /* ---- helpers ---- */
+  /* helpers  */
 
   _handleDeclaration(node) {
-    // node: { dataType, identifier, isArray, arraySize, initialValue }
+  
     this.symbolTable.defineVariable(
       node.identifier,
       node.dataType,
@@ -151,7 +147,7 @@ class SemanticAnalyzer {
 
   _analyzeFunction(fnNode) {
     const params = fnNode.params || fnNode.parameters || [];
-    // treat parameters as variables too (global-style for now)
+    //  parameters as variables too
     params.forEach(p => {
       this.symbolTable.defineVariable(p.name, p.type, false, null);
     });
@@ -237,7 +233,7 @@ class SemanticAnalyzer {
       return;
     }
 
-    // anything else – warn but don't crash
+    // anything else – warn 
     this.warnings.push(`Unknown statement type: ${t}`);
   }
 
