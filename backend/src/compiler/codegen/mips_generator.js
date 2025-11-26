@@ -96,7 +96,7 @@ class MIPSGenerator {
     this.registerAllocator.reset(); 
     
     // Function label with clear separation
-    this.emit('# ----------------------------------------');
+  
     this.emit(`# Function: ${fn.name}`);
     this.emit('# ----------------------------------------');
     this.emit(`${fn.name}:`);
@@ -152,7 +152,7 @@ class MIPSGenerator {
     this.inFunction = false;
   }
 
-  /* ==================== STATEMENTS ==================== */
+  /*  STATEMENTS */
 
   generateStatement(node) {
     if (!node) return;
@@ -418,7 +418,7 @@ class MIPSGenerator {
     }
   }
 
-  /* ==================== EXPRESSIONS ==================== */
+  /*  EXPRESSIONS*/
 
   generateExpression(node) {
     if (!node) return '$zero';
@@ -580,7 +580,7 @@ class MIPSGenerator {
   generateFunctionCall(node) {
     this.emit(`    # Call function: ${node.name}`);
     
-    // Save $t0-$t9 if we're in a function (caller-save)
+    // Save $t0-$t9 if we're in a function 
     const tempsToSave = ['$t0', '$t1', '$t2', '$t3', '$t4'];
     if (this.inFunction) {
       this.emit('    # Save caller-saved registers');
@@ -590,7 +590,7 @@ class MIPSGenerator {
       });
     }
     
-    // Evaluate arguments and store in $a0-$a3
+    //  arguments and store in $a0-$a3
     const args = node.args || [];
     const argRegs = [];
     
@@ -626,7 +626,7 @@ class MIPSGenerator {
     return res;
   }
 
-  /* ==================== MEMORY OPERATIONS ==================== */
+  /* MEMORY OPERATIONS */
 
   loadVariable(name, arrayIndex) {
     const sym = this.symbolTable.lookup(name);
@@ -688,7 +688,7 @@ class MIPSGenerator {
     }
   }
 
-  /* ==================== UTILITIES ==================== */
+  /* UTILITIES  */
 
   _isType(node, ...types) {
     return node && types.includes(node.type);
@@ -707,10 +707,10 @@ class MIPSGenerator {
 
   assembleOutput() {
     const lines = [
-      '# ============================================',
+     
       '# Generated MIPS Assembly Code',
       '# C-to-MIPS Compiler',
-      '# ============================================',
+      '#                       ',
       '',
       ...this.dataSection,
       '',
